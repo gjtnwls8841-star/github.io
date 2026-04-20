@@ -7,53 +7,36 @@
     <style>
         body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .chat-container { width: 400px; height: 600px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
-        
-        /* 1. 헤더: 진한 초록색 */
         .header { background: #27ae60; color: white; padding: 20px; text-align: center; font-weight: bold; }
-        
         .chat-box { flex: 1; padding: 20px; overflow-y: auto; border-bottom: 1px solid #eee; display: flex; flex-direction: column; }
-        
         .quick-buttons { padding: 10px 15px; display: flex; gap: 8px; flex-wrap: wrap; background: #fff; border-top: 1px solid #f9f9f9; }
-        
-        /* 2. 해시태그 버튼: 연한 초록색 배경에 초록색 글씨 */
-        .tag-btn { background: #ebf7ee; color: #27ae60; border: 1px solid #c8e6c9; font-size: 12px; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .tag-btn { background: #ebf7ee; color: #27ae60; border: 1px solid #c8e6c9; font-size: 11px; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
         .tag-btn:hover { background: #27ae60; color: white; }
-
         .input-area { display: flex; padding: 15px; background: #fff; }
         input { flex: 1; border: 1px solid #ddd; padding: 12px; border-radius: 5px; outline: none; }
-        
-        /* 3. 전송 버튼: 헤더와 맞춘 초록색 */
         .send-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-
         .bot-msg-wrapper { margin-bottom: 15px; text-align: left; }
         .bot-msg { background: #e9ecef; padding: 10px 14px; border-radius: 12px; border-top-left-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; }
-        
         .user-msg-wrapper { margin-bottom: 15px; text-align: right; }
-        
-        /* 4. 사용자 말풍선: 생기 있는 초록색 */
         .user-msg { background: #2ecc71; color: white; padding: 10px 14px; border-radius: 12px; border-top-right-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; }
     </style>
-        
 </head>
 <body>
-
     <div class="chat-container">
         <div class="header">📋 인사노무 자동응답 센터</div>
-        
         <div class="chat-box" id="chatBox">
             <div class="bot-msg-wrapper">
-                <div class="bot-msg">안녕하세요 수진님! 😊<br>아래 태그를 누르거나 키워드를 입력해보세요.</div>
+                <div class="bot-msg">안녕하세요 수진님! 😊<br>방대한 노무 지식이 업데이트 되었습니다.<br>키워드를 입력하거나 태그를 눌러보세요.</div>
             </div>
         </div>
-
         <div class="quick-buttons">
             <button class="tag-btn" onclick="quickSend('연차')">#연차</button>
-            <button class="tag-btn" onclick="quickSend('근무시간')">#근무시간</button>
-            <button class="tag-btn" onclick="quickSend('병가')">#병가</button>
-            <button class="tag-btn" onclick="quickSend('경조사')">#경조사</button>
             <button class="tag-btn" onclick="quickSend('퇴직금')">#퇴직금</button>
+            <button class="tag-btn" onclick="quickSend('포괄임금')">#포괄임금</button>
+            <button class="tag-btn" onclick="quickSend('5인미만')">#5인미만</button>
+            <button class="tag-btn" onclick="quickSend('수습')">#수습</button>
+            <button class="tag-btn" onclick="quickSend('최저임금')">#최저임금</button>
         </div>
-
         <div class="input-area">
             <input type="text" id="userInput" placeholder="질문을 입력하세요..." onkeypress="if(event.keyCode==13) send()">
             <button class="send-btn" onclick="send()">전송</button>
@@ -65,62 +48,55 @@
             const input = document.getElementById('userInput');
             const chatBox = document.getElementById('chatBox');
             const text = input.value.trim();
-
             if (text === "") return;
 
             chatBox.innerHTML += `<div class="user-msg-wrapper"><div class="user-msg">${text}</div></div>`;
 
-            let reply = "죄송합니다. 해당 규정은 아직 학습 중이에요. '연차', '근무시간' 등으로 질문해주세요!";
+            // 기본 답변 설정
+            let reply = "죄송합니다. 해당 내용은 아직 학습 중이에요. <b>'연차', '포괄임금', '5인미만'</b> 등의 단어로 질문해주세요!";
 
+            // 통합 답변 로직
             if(text.includes("근무시간") || text.includes("휴게")) {
-                reply = "<b>[근무 및 휴게]</b><br>정규 근무시간은 평일 09:00~18:00이며, 휴게시간은 12:00~13:00입니다.";
+                reply = "<b>[근무 및 휴게]</b><br>평일 09:00~18:00 근무, 휴게시간은 12:00~13:00입니다. 부서장 승인 시 시차출퇴근제 활용이 가능합니다.";
             } else if(text.includes("지각") || text.includes("조퇴")) {
-                reply = "<b>[지각/조퇴]</b><br>사유 발생 즉시 신고 필수! 월 3회 무단 지각 시 복무 위반입니다.";
+                reply = "<b>[지각/조퇴]</b><br>즉시 인사시스템 신고 필수! 월 3회 무단 지각 시 복무 위반으로 간주됩니다.";
             } else if(text.includes("연차") || text.includes("휴가")) {
-                reply = "<b>[연차 휴가]</b><br>1년 80% 출근 시 15일 부여, 2년마다 1일 가산됩니다.";
+                reply = "<b>[연차 휴가]</b><br>1년 80% 출근 시 15일 부여. 2년마다 1일 가산(최대 25일). 미사용 연차는 촉진 시 보상이 없을 수 있습니다.";
             } else if(text.includes("병가")) {
-                reply = "<b>[병가]</b><br>연간 최대 30일(무급). 3일 이상 사용 시 진단서가 필요합니다.";
+                reply = "<b>[병가]</b><br>연간 최대 30일(무급). 3일 이상 연속 사용 시 진단서 제출이 필요합니다.";
             } else if(text.includes("경조사")) {
-                reply = "<b>[경조사]</b><br>본인결혼 5일, 배우자출산 10일, 부모상 5일입니다.";
+                reply = "<b>[경조사 유급휴가]</b><br>-본인결혼: 5일<br>-배우자출산: 10일<br>-부모/배우자상: 5일";
             } else if(text.includes("퇴직금") || text.includes("퇴직급여")) {
-                reply = "<b>[퇴직급여 지급 대상]</b><br>1년 이상 근속 & 주 15시간 이상 근로자가 퇴직할 때 지급합니다.<br><br><b>[계산 공식]</b><br>(평균임금 × 30일 × 총계속근로일수) ÷ 365<br><br><b>[지급 기한]</b><br>퇴직 후 14일 이내 IRP 계좌 이전을 원칙으로 합니다.";
+                reply = "<b>[퇴직금]</b><br>1년 이상 근속 & 주 15시간 이상 시 지급.<br>공식: (평균임금×30일×총근속일수)÷365. 퇴직 후 14일 내 IRP 계좌 지급 원칙입니다.";
             } else if(text.includes("중간정산")) {
-                reply = "<b>[퇴직금 중간정산]</b><br>원칙적으로 금지되나, 아래 사유 시 가능합니다.<br>1. 무주택자의 주택 구입/전세보증금<br>2. 6개월 이상 요양<br>3. 파산/회생 절차 등";
+                reply = "<b>[퇴직금 중간정산]</b><br>원칙적 금지. 단, 무주택자 주택구입, 6개월 요양 등 법정 사유 시에만 가능합니다.";
             } else if(text.includes("평균임금")) {
-                reply = "<b>[평균임금 정의]</b><br>퇴직 전 3개월간 지급된 임금 총액을 그 기간의 총일수로 나눈 금액입니다. (연차수당, 상여금 등 포함)";
-            }let reply = "해당 내용은 아직 학습 중이에요. <b>'포괄임금', '5인미만', '퇴직연금', '기간제'</b> 등의 키워드로 질문해주세요!";
-
-            if(text.includes("포괄") || text.includes("포괄임금")) {
-                reply = "<b>[포괄임금제 인정요건]</b><br>1. 근로시간 산정이 객관적으로 어려울 것<br>2. 명시적 합의가 있을 것<br>3. 근로자에게 불이익하지 않을 것(차액 발생 시 청구 가능)<br>※ 사무직처럼 산정이 가능하다면 원칙적 <b>무효</b>입니다.";
+                reply = "<b>[평균임금]</b><br>퇴직 전 3개월간 임금 총액을 그 기간의 총일수로 나눈 금액입니다. (연차수당, 상여금 포함)";
+            } else if(text.includes("포괄") || text.includes("포괄임금")) {
+                reply = "<b>[포괄임금제]</b><br>근로시간 산정이 어렵고 명시적 합의가 있어야 인정됩니다. 사무직 등 산정 가능 직종은 원칙적 <b>무효</b>이며 차액 청구가 가능합니다.";
             } else if(text.includes("5인") || text.includes("미만")) {
-                reply = "<b>[5인 미만 사업장 적용]</b><br>✅ 적용: 해고예고(30일 전), 근로계약서 작성, 해고예고수당<br>❌ 미적용: 부당해고 구제신청, 가산수당(1.5배), 연차휴가<br>※ 직장 내 괴롭힘은 금지되나 처벌 규정은 제한적입니다.";
-            } else if(text.includes("계약") || text.includes("위약")) {
-                reply = "<b>[근로계약 보호장치]</b><br>1. <b>조건명시:</b> 임금, 시간, 휴일 등 서면 교부 필수<br>2. <b>위약예정 금지:</b> 손해배상액 미리 정하는 계약 금지<br>3. <b>상계 금지:</b> 빌려준 돈과 임금 까기 금지";
+                reply = "<b>[5인 미만 사업장]</b><br>✅ 적용: 해고예고, 근로계약서 작성<br>❌ 미적용: 부당해고 구제신청, 가산수당(1.5배), 연차휴가";
+            } else if(text.includes("계약") || text.includes("위약") || text.includes("명시")) {
+                reply = "<b>[근로계약 보호]</b><br>임금, 시간 등 서면 명시 필수. 위약금 예정 금지 및 임금 전차금 상계 금지가 원칙입니다.";
             } else if(text.includes("채용") || text.includes("시용") || text.includes("수습")) {
-                reply = "<b>[채용내정 및 시용]</b><br>- <b>채용내정:</b> 합격 통보 후 취소는 '해고'에 해당함<br>- <b>시용(수습):</b> 정식 채용 전 적격성 판단 기간. 본채용 거부 시에도 정당한 이유가 필요하지만 일반 해고보다는 넓게 인정됩니다.";
+                reply = "<b>[채용내정 및 시용]</b><br>내정 취소는 '해고'에 해당합니다. 시용(수습) 기간 본채용 거부도 정당한 이유가 필요하지만 일반 해고보다 기준이 완화됩니다.";
             } else if(text.includes("기간제") || text.includes("계약직")) {
-                reply = "<b>[기간제법]</b><br>- 최대 2년 사용 가능 (초과 시 무기계약직 간주)<br>- 정규직 대비 합리적 이유 없는 차별 금지";
-            } else if(text.includes("파견")) {
-                reply = "<b>[파견법]</b><br>- 32개 전문업무로 제한 (제조업 생산공정 금지)<br>- 최대 2년 (초과 사용 시 직접 고용 의무 발생)";
+                reply = "<b>[기간제법]</b><br>최대 2년 사용 가능. 초과 시 무기계약직 간주. 합리적 이유 없는 차별은 금지됩니다.";
             } else if(text.includes("성희롱") || text.includes("평등")) {
-                reply = "<b>[남녀고용평등법]</b><br>- 직장 내 성희롱 예방 교육 연 1회 필수<br>- 육아휴직(최대 1년) 및 육아기 근로시간 단축 보장";
+                reply = "<b>[남녀고용평등]</b><br>성희롱 예방교육 연 1회 필수. 육아휴직(최대 1년) 및 육아기 근로시간 단축 보장 의무가 있습니다.";
             } else if(text.includes("최저임금")) {
-                reply = "<b>[최저임금법]</b><br>- 매년 8월 5일까지 고시<br>- 식대, 상여금 등 복리후생비도 일정 기준에 따라 산입 범위에 포함됩니다.";
-            } else if(text.includes("퇴직연금") || text.includes("DB") || text.includes("DC")) {
-                reply = "<b>[퇴직연금 종류]</b><br>1. <b>DB(확정급여):</b> 회사가 운용, 정해진 금액 수령<br>2. <b>DC(확정기여):</b> 본인이 운용, 결과에 따라 변동<br>3. <b>IRP(개인형):</b> 이직 시 퇴직금 보관 및 개인 추가납입";
+                reply = "<b>[최저임금법]</b><br>매년 8월 5일까지 고시. 매월 지급하는 상여금과 식대도 일정 기준에 따라 산입 범위에 포함됩니다.";
             } else if(text.includes("체불") || text.includes("대지급금")) {
-                reply = "<b>[임금채권보장법]</b><br>회사가 도산하거나 체불 발생 시, 국가가 일정 범위 내의 임금을 먼저 지급해주는 <b>'대지급금 제도'</b>를 운영합니다.";
+                reply = "<b>[임금체불 구제]</b><br>회사가 도산하거나 체불 시, 국가가 대신 지급하는 <b>대지급금 제도</b>를 활용할 수 있습니다.";
             }
 
             setTimeout(() => {
                 chatBox.innerHTML += `<div class="bot-msg-wrapper"><div class="bot-msg">${reply}</div></div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 500);
-
             input.value = "";
         }
 
-        // 퀵 버튼 함수
         function quickSend(word) {
             document.getElementById('userInput').value = word;
             send();
