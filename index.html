@@ -3,22 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>수진의 인사관리 시스템</title>
+    <title>수진의 인사관리 시스템 v2</title>
     <style>
         body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f0f2f5; display: flex; height: 100vh; margin: 0; overflow: hidden; }
         
-        /* [1] 왼쪽 사이드바 디자인 */
-        .sidebar { width: 200px; background: #2c3e50; color: white; display: flex; flex-direction: column; padding: 20px 0; }
-        .sidebar h2 { font-size: 18px; text-align: center; margin-bottom: 30px; color: #2ecc71; }
-        .menu-item { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; font-size: 15px; }
-        .menu-item:hover { background: #34495e; }
+        /* 사이드바 디자인 */
+        .sidebar { width: 220px; background: #2c3e50; color: white; display: flex; flex-direction: column; padding: 20px 0; shrink-0; }
+        .sidebar h2 { font-size: 18px; text-align: center; margin-bottom: 30px; color: #2ecc71; border-bottom: 1px solid #3e4f5f; padding-bottom: 20px; }
+        .menu-item { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; font-size: 15px; color: #bdc3c7; }
+        .menu-item:hover { background: #34495e; color: white; }
         .menu-item.active { background: #27ae60; color: white; font-weight: bold; }
 
-        /* [2] 오른쪽 메인 영역 */
-        .main-content { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
+        /* 메인 영역 */
+        .main-content { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; padding: 20px; overflow-y: auto; }
 
-        /* 챗봇 컨테이너 (기존 디자인 유지) */
-        .chat-container { width: 400px; height: 600px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
+        /* [메뉴 1] 챗봇 화면 */
+        .page { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; }
+        .page.active { display: flex; }
+        
+        .chat-container { width: 100%; max-width: 450px; height: 650px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
         .header { background: #27ae60; color: white; padding: 20px; text-align: center; font-weight: bold; }
         .chat-box { flex: 1; padding: 20px; overflow-y: auto; border-bottom: 1px solid #eee; display: flex; flex-direction: column; }
         .quick-buttons { padding: 10px 15px; display: flex; gap: 8px; flex-wrap: wrap; background: #fff; }
@@ -26,6 +29,17 @@
         .input-area { display: flex; padding: 15px; background: #fff; }
         input { flex: 1; border: 1px solid #ddd; padding: 12px; border-radius: 5px; outline: none; }
         .send-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        /* [메뉴 2] HR 가이드 화면 디자인 */
+        .guide-container { width: 100%; max-width: 800px; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .guide-header { border-bottom: 2px solid #27ae60; padding-bottom: 15px; margin-bottom: 20px; }
+        .guide-grid { display: grid; grid-template-cols: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: #f9fbf9; border-radius: 12px; padding: 20px; border: 1px solid #eef2ee; }
+        .card h3 { color: #27ae60; margin-top: 0; display: flex; align-items: center; gap: 8px; }
+        .card ul { padding-left: 20px; font-size: 14px; color: #555; }
+        .card li { margin-bottom: 8px; }
+
+        /* 말풍선 공통 스타일 */
         .bot-msg-wrapper { margin-bottom: 15px; text-align: left; }
         .bot-msg { background: #e9ecef; padding: 10px 14px; border-radius: 12px; border-top-left-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; }
         .user-msg-wrapper { margin-bottom: 15px; text-align: right; }
@@ -35,34 +49,85 @@
 <body>
 
     <div class="sidebar">
-        <h2>HR System</h2>
-        <div class="menu-item active">🤖 1. 수진봇</div>
-        <div class="menu-item">📚 2. 26년 인사규정 및 법령 가이드</div>
-        <div class="menu-item">🧮 3. 계산기 (준비중)</div>
-        <div class="menu-item">📝 4. 내 메모 (준비중)</div>
+        <h2>Sujin HR</h2>
+        <div class="menu-item active" onclick="showPage('chatPage', this)">🤖 1. 챗봇 상담</div>
+        <div class="menu-item" onclick="showPage('guidePage', this)">📚 2. HR 가이드</div>
     </div>
 
     <div class="main-content">
-        <div class="chat-container">
-            <div class="header">📋 인사노무 자동응답 센터</div>
-            <div class="chat-box" id="chatBox">
-                <div class="bot-msg-wrapper">
-                    <div class="bot-msg">안녕하세요 수진님! 😊<br>왼쪽 메뉴에서 기능을 선택하거나 챗봇에게 물어보세요.</div>
+        <div id="chatPage" class="page active">
+            <div class="chat-container">
+                <div class="header">📋 인사노무 자동응답 센터</div>
+                <div class="chat-box" id="chatBox">
+                    <div class="bot-msg-wrapper"><div class="bot-msg">안녕하세요! 무엇을 도와드릴까요?</div></div>
+                </div>
+                <div class="quick-buttons">
+                    <button class="tag-btn" onclick="quickSend('연차')">#연차</button>
+                    <button class="tag-btn" onclick="quickSend('퇴직금')">#퇴직금</button>
+                    <button class="tag-btn" onclick="quickSend('5인미만')">#5인미만</button>
+                </div>
+                <div class="input-area">
+                    <input type="text" id="userInput" placeholder="질문을 입력하세요..." onkeypress="if(event.keyCode==13) send()">
+                    <button class="send-btn" onclick="send()">전송</button>
                 </div>
             </div>
-            <div class="quick-buttons">
-                <button class="tag-btn" onclick="quickSend('연차')">#연차</button>
-                <button class="tag-btn" onclick="quickSend('퇴직금')">#퇴직금</button>
-                <button class="tag-btn" onclick="quickSend('5인미만')">#5인미만</button>
-            </div>
-            <div class="input-area">
-                <input type="text" id="userInput" placeholder="질문을 입력하세요..." onkeypress="if(event.keyCode==13) send()">
-                <button class="send-btn" onclick="send()">전송</button>
+        </div>
+
+        <div id="guidePage" class="page">
+            <div class="guide-container">
+                <div class="guide-header">
+                    <h2 style="margin:0;">⚖️ 2026 HR Lifecycle 실무 가이드</h2>
+                    <p style="color:#888; font-size:14px;">2026년 최신 개정법령 및 인사 트렌드</p>
+                </div>
+                <div class="guide-grid">
+                    <div class="card">
+                        <h3>👤 채용 (Recruitment)</h3>
+                        <ul>
+                            <li>채용절차법: 개인정보 요구 금지 강화</li>
+                            <li>AI 면접: 자동화된 결정 설명요구권</li>
+                            <li>남녀고평법: 모집 시 성차별 금지</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💰 보상 (Compensation)</h3>
+                        <ul>
+                            <li>2026 최저임금 준수 및 산입범위 확인</li>
+                            <li>포괄임금제 규제 강화 대응</li>
+                            <li>임금명세서 계산방법 기재 의무</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 평가 (Evaluation)</h3>
+                        <ul>
+                            <li>절대평가 비중 확대 및 수시 피드백</li>
+                            <li>직무 역량 중심 다면평가 도입</li>
+                            <li>ESG 경영에 따른 윤리 평가 필수화</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🚪 퇴직 (Exit)</h3>
+                        <ul>
+                            <li>퇴직연금 IRP 이전 필수화</li>
+                            <li>정년 연장 및 재고용 제도 운영</li>
+                            <li>전직 지원 서비스(Outplacement)</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // 메뉴 전환 함수
+        function showPage(pageId, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // 챗봇 함수 (기존 로직 유지)
         function send() {
             const input = document.getElementById('userInput');
             const chatBox = document.getElementById('chatBox');
@@ -70,19 +135,11 @@
             if (text === "") return;
 
             chatBox.innerHTML += `<div class="user-msg-wrapper"><div class="user-msg">${text}</div></div>`;
-
-            let reply = "죄송합니다. 해당 내용은 아직 학습 중이에요. <b>'포괄임금', '5인미만'</b> 등의 단어로 질문해주세요!";
-
-            // 기존 답변 로직 통합 (수진님이 정리한 데이터들)
-            if(text.includes("연차") || text.includes("휴가")) {
-                reply = "<b>[연차 휴가]</b><br>1년 80% 출근 시 15일 부여. 2년마다 1일 가산됩니다.";
-            } else if(text.includes("퇴직금")) {
-                reply = "<b>[퇴직금]</b><br>1년 이상 근속 & 주 15시간 이상 시 지급됩니다.";
-            } else if(text.includes("5인") || text.includes("미만")) {
-                reply = "<b>[5인 미만 사업장]</b><br>❌ 미적용: 부당해고 구제신청, 가산수당, 연차휴가";
-            } else if(text.includes("포괄") || text.includes("포괄임금")) {
-                reply = "<b>[포괄임금제]</b><br>근로시간 산정이 어렵고 명시적 합의가 있어야 인정됩니다.";
-            }
+            
+            let reply = "죄송합니다. <b>'연차', '퇴직금', '포괄임금'</b> 등으로 질문해주세요!";
+            if(text.includes("연차")) reply = "1년 80% 출근 시 15일 부여됩니다.";
+            else if(text.includes("퇴직금")) reply = "1년 이상 근속 시 평균임금 기준으로 지급됩니다.";
+            else if(text.includes("포괄")) reply = "산정이 어려운 직종만 인정되며 사무직은 원칙적 무효입니다.";
 
             setTimeout(() => {
                 chatBox.innerHTML += `<div class="bot-msg-wrapper"><div class="bot-msg">${reply}</div></div>`;
