@@ -3,15 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>수진의 인사/노무 자동응답</title>
+    <title>수진의 인사관리 시스템</title>
     <style>
-        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f0f2f5; display: flex; height: 100vh; margin: 0; overflow: hidden; }
+        
+        /* [1] 왼쪽 사이드바 디자인 */
+        .sidebar { width: 200px; background: #2c3e50; color: white; display: flex; flex-direction: column; padding: 20px 0; }
+        .sidebar h2 { font-size: 18px; text-align: center; margin-bottom: 30px; color: #2ecc71; }
+        .menu-item { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; font-size: 15px; }
+        .menu-item:hover { background: #34495e; }
+        .menu-item.active { background: #27ae60; color: white; font-weight: bold; }
+
+        /* [2] 오른쪽 메인 영역 */
+        .main-content { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; }
+
+        /* 챗봇 컨테이너 (기존 디자인 유지) */
         .chat-container { width: 400px; height: 600px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
         .header { background: #27ae60; color: white; padding: 20px; text-align: center; font-weight: bold; }
         .chat-box { flex: 1; padding: 20px; overflow-y: auto; border-bottom: 1px solid #eee; display: flex; flex-direction: column; }
-        .quick-buttons { padding: 10px 15px; display: flex; gap: 8px; flex-wrap: wrap; background: #fff; border-top: 1px solid #f9f9f9; }
-        .tag-btn { background: #ebf7ee; color: #27ae60; border: 1px solid #c8e6c9; font-size: 11px; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .tag-btn:hover { background: #27ae60; color: white; }
+        .quick-buttons { padding: 10px 15px; display: flex; gap: 8px; flex-wrap: wrap; background: #fff; }
+        .tag-btn { background: #ebf7ee; color: #27ae60; border: 1px solid #c8e6c9; font-size: 11px; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-weight: bold; }
         .input-area { display: flex; padding: 15px; background: #fff; }
         input { flex: 1; border: 1px solid #ddd; padding: 12px; border-radius: 5px; outline: none; }
         .send-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
@@ -22,24 +33,32 @@
     </style>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="header">📋 인사노무 자동응답 센터</div>
-        <div class="chat-box" id="chatBox">
-            <div class="bot-msg-wrapper">
-                <div class="bot-msg">안녕하세요 수진님! 😊<br>방대한 노무 지식이 업데이트 되었습니다.<br>키워드를 입력하거나 태그를 눌러보세요.</div>
+
+    <div class="sidebar">
+        <h2>HR System</h2>
+        <div class="menu-item active">🤖 1. 챗봇</div>
+        <div class="menu-item">📚 2. 노무백과 (준비중)</div>
+        <div class="menu-item">🧮 3. 계산기 (준비중)</div>
+        <div class="menu-item">📝 4. 내 메모 (준비중)</div>
+    </div>
+
+    <div class="main-content">
+        <div class="chat-container">
+            <div class="header">📋 인사노무 자동응답 센터</div>
+            <div class="chat-box" id="chatBox">
+                <div class="bot-msg-wrapper">
+                    <div class="bot-msg">안녕하세요 수진님! 😊<br>왼쪽 메뉴에서 기능을 선택하거나 챗봇에게 물어보세요.</div>
+                </div>
             </div>
-        </div>
-        <div class="quick-buttons">
-            <button class="tag-btn" onclick="quickSend('연차')">#연차</button>
-            <button class="tag-btn" onclick="quickSend('퇴직금')">#퇴직금</button>
-            <button class="tag-btn" onclick="quickSend('포괄임금')">#포괄임금</button>
-            <button class="tag-btn" onclick="quickSend('5인미만')">#5인미만</button>
-            <button class="tag-btn" onclick="quickSend('수습')">#수습</button>
-            <button class="tag-btn" onclick="quickSend('최저임금')">#최저임금</button>
-        </div>
-        <div class="input-area">
-            <input type="text" id="userInput" placeholder="질문을 입력하세요..." onkeypress="if(event.keyCode==13) send()">
-            <button class="send-btn" onclick="send()">전송</button>
+            <div class="quick-buttons">
+                <button class="tag-btn" onclick="quickSend('연차')">#연차</button>
+                <button class="tag-btn" onclick="quickSend('퇴직금')">#퇴직금</button>
+                <button class="tag-btn" onclick="quickSend('5인미만')">#5인미만</button>
+            </div>
+            <div class="input-area">
+                <input type="text" id="userInput" placeholder="질문을 입력하세요..." onkeypress="if(event.keyCode==13) send()">
+                <button class="send-btn" onclick="send()">전송</button>
+            </div>
         </div>
     </div>
 
@@ -52,42 +71,17 @@
 
             chatBox.innerHTML += `<div class="user-msg-wrapper"><div class="user-msg">${text}</div></div>`;
 
-            // 기본 답변 설정
-            let reply = "죄송합니다. 해당 내용은 아직 학습 중이에요. <b>'연차', '포괄임금', '5인미만'</b> 등의 단어로 질문해주세요!";
+            let reply = "죄송합니다. 해당 내용은 아직 학습 중이에요. <b>'포괄임금', '5인미만'</b> 등의 단어로 질문해주세요!";
 
-            // 통합 답변 로직
-            if(text.includes("근무시간") || text.includes("휴게")) {
-                reply = "<b>[근무 및 휴게]</b><br>평일 09:00~18:00 근무, 휴게시간은 12:00~13:00입니다. 부서장 승인 시 시차출퇴근제 활용이 가능합니다.";
-            } else if(text.includes("지각") || text.includes("조퇴")) {
-                reply = "<b>[지각/조퇴]</b><br>즉시 인사시스템 신고 필수! 월 3회 무단 지각 시 복무 위반으로 간주됩니다.";
-            } else if(text.includes("연차") || text.includes("휴가")) {
-                reply = "<b>[연차 휴가]</b><br>1년 80% 출근 시 15일 부여. 2년마다 1일 가산(최대 25일). 미사용 연차는 촉진 시 보상이 없을 수 있습니다.";
-            } else if(text.includes("병가")) {
-                reply = "<b>[병가]</b><br>연간 최대 30일(무급). 3일 이상 연속 사용 시 진단서 제출이 필요합니다.";
-            } else if(text.includes("경조사")) {
-                reply = "<b>[경조사 유급휴가]</b><br>-본인결혼: 5일<br>-배우자출산: 10일<br>-부모/배우자상: 5일";
-            } else if(text.includes("퇴직금") || text.includes("퇴직급여")) {
-                reply = "<b>[퇴직금]</b><br>1년 이상 근속 & 주 15시간 이상 시 지급.<br>공식: (평균임금×30일×총근속일수)÷365. 퇴직 후 14일 내 IRP 계좌 지급 원칙입니다.";
-            } else if(text.includes("중간정산")) {
-                reply = "<b>[퇴직금 중간정산]</b><br>원칙적 금지. 단, 무주택자 주택구입, 6개월 요양 등 법정 사유 시에만 가능합니다.";
-            } else if(text.includes("평균임금")) {
-                reply = "<b>[평균임금]</b><br>퇴직 전 3개월간 임금 총액을 그 기간의 총일수로 나눈 금액입니다. (연차수당, 상여금 포함)";
-            } else if(text.includes("포괄") || text.includes("포괄임금")) {
-                reply = "<b>[포괄임금제]</b><br>근로시간 산정이 어렵고 명시적 합의가 있어야 인정됩니다. 사무직 등 산정 가능 직종은 원칙적 <b>무효</b>이며 차액 청구가 가능합니다.";
+            // 기존 답변 로직 통합 (수진님이 정리한 데이터들)
+            if(text.includes("연차") || text.includes("휴가")) {
+                reply = "<b>[연차 휴가]</b><br>1년 80% 출근 시 15일 부여. 2년마다 1일 가산됩니다.";
+            } else if(text.includes("퇴직금")) {
+                reply = "<b>[퇴직금]</b><br>1년 이상 근속 & 주 15시간 이상 시 지급됩니다.";
             } else if(text.includes("5인") || text.includes("미만")) {
-                reply = "<b>[5인 미만 사업장]</b><br>✅ 적용: 해고예고, 근로계약서 작성<br>❌ 미적용: 부당해고 구제신청, 가산수당(1.5배), 연차휴가";
-            } else if(text.includes("계약") || text.includes("위약") || text.includes("명시")) {
-                reply = "<b>[근로계약 보호]</b><br>임금, 시간 등 서면 명시 필수. 위약금 예정 금지 및 임금 전차금 상계 금지가 원칙입니다.";
-            } else if(text.includes("채용") || text.includes("시용") || text.includes("수습")) {
-                reply = "<b>[채용내정 및 시용]</b><br>내정 취소는 '해고'에 해당합니다. 시용(수습) 기간 본채용 거부도 정당한 이유가 필요하지만 일반 해고보다 기준이 완화됩니다.";
-            } else if(text.includes("기간제") || text.includes("계약직")) {
-                reply = "<b>[기간제법]</b><br>최대 2년 사용 가능. 초과 시 무기계약직 간주. 합리적 이유 없는 차별은 금지됩니다.";
-            } else if(text.includes("성희롱") || text.includes("평등")) {
-                reply = "<b>[남녀고용평등]</b><br>성희롱 예방교육 연 1회 필수. 육아휴직(최대 1년) 및 육아기 근로시간 단축 보장 의무가 있습니다.";
-            } else if(text.includes("최저임금")) {
-                reply = "<b>[최저임금법]</b><br>매년 8월 5일까지 고시. 매월 지급하는 상여금과 식대도 일정 기준에 따라 산입 범위에 포함됩니다.";
-            } else if(text.includes("체불") || text.includes("대지급금")) {
-                reply = "<b>[임금체불 구제]</b><br>회사가 도산하거나 체불 시, 국가가 대신 지급하는 <b>대지급금 제도</b>를 활용할 수 있습니다.";
+                reply = "<b>[5인 미만 사업장]</b><br>❌ 미적용: 부당해고 구제신청, 가산수당, 연차휴가";
+            } else if(text.includes("포괄") || text.includes("포괄임금")) {
+                reply = "<b>[포괄임금제]</b><br>근로시간 산정이 어렵고 명시적 합의가 있어야 인정됩니다.";
             }
 
             setTimeout(() => {
