@@ -5,21 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>수진의 인사/노무 자동응답</title>
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .chat-container { width: 400px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: #4a90e2; color: white; padding: 20px; text-align: center; font-weight: bold; }
-        .chat-box { height: 300px; padding: 20px; overflow-y: auto; border-bottom: 1px solid #eee; font-size: 14px; line-height: 1.6; }
-        .input-area { display: flex; padding: 15px; }
-        input { flex: 1; border: 1px solid #ddd; padding: 10px; border-radius: 5px; outline: none; }
-        button { background: #4a90e2; color: white; border: none; padding: 10px 15px; margin-left: 10px; border-radius: 5px; cursor: pointer; }
-        .bot-msg { background: #e9ecef; padding: 8px 12px; border-radius: 10px; margin-bottom: 10px; display: inline-block; }
+        /* 디자인: 챗봇의 외형을 결정합니다 */
+        body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .chat-container { width: 400px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
+        .header { background: #4a90e2; color: white; padding: 20px; text-align: center; font-weight: bold; font-size: 1.1em; }
+        .chat-box { height: 400px; padding: 20px; overflow-y: auto; border-bottom: 1px solid #eee; display: flex; flex-direction: column; }
+        .input-area { display: flex; padding: 15px; background: #fff; }
+        input { flex: 1; border: 1px solid #ddd; padding: 12px; border-radius: 5px; outline: none; font-size: 14px; }
+        button { background: #4a90e2; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #357abd; }
+        
+        /* 말풍선 스타일 */
+        .bot-msg-wrapper { margin-bottom: 15px; text-align: left; }
+        .bot-msg { background: #e9ecef; padding: 10px 14px; border-radius: 12px; border-top-left-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; color: #333; }
+        .user-msg-wrapper { margin-bottom: 15px; text-align: right; }
+        .user-msg { background: #4a90e2; color: white; padding: 10px 14px; border-radius: 12px; border-top-right-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; }
     </style>
 </head>
 <body>
+
     <div class="chat-container">
         <div class="header">📋 인사노무 자동응답 센터</div>
         <div class="chat-box" id="chatBox">
-            <div class="bot-msg">안녕하세요! 궁금한 인사/노무 키워드를 입력해주세요.<br>(예: 연차, 퇴직금, 수습기간)</div>
+            <div class="bot-msg-wrapper">
+                <div class="bot-msg">안녕하세요 수진님! 😊<br>회사 규정에 대해 궁금한 키워드를 입력해주세요.<br><b>(예: 근무시간, 연차, 병가, 경조사)</b></div>
+            </div>
         </div>
         <div class="input-area">
             <input type="text" id="userInput" placeholder="질문을 입력하세요..." onkeypress="if(event.keyCode==13) send()">
@@ -31,35 +41,49 @@
         function send() {
             const input = document.getElementById('userInput');
             const chatBox = document.getElementById('chatBox');
-            if (input.value.trim() === "") return;
-// 답변 로직: 수진님이 보내주신 회사 규정 데이터 반영
-let reply = "죄송합니다. 해당 규정에 대해서는 아직 학습하지 못했습니다. 인사팀에 문의하시거나 '연차', '근무시간', '병가', '경조사' 등의 키워드로 질문해주세요.";
-const text = input.value;
+            const text = input.value.trim();
 
-if(text.includes("근무시간") || text.includes("휴게")) {
-    reply = "정규 근무시간은 평일 09:00~18:00이며, 휴게시간은 12:00~13:00(1시간)입니다. 부서장 승인 시 시차출퇴근제(08:00~17:00 등)도 가능해요.";
-} else if(text.includes("지각") || text.includes("조퇴")) {
-    reply = "지각/조퇴는 사유 발생 즉시 인사 시스템에 사전 신고해야 합니다. 월 3회 이상 무단 지각 시 복무 위반으로 간주되니 주의하세요!";
-} else if(text.includes("연차") || text.includes("휴가")) {
-    reply = "1년 80% 이상 출근 시 15일의 연차가 부여되며, 2년마다 1일씩 가산(최대 25일)됩니다. 미사용 연차는 촉진 제도에 따라 보상이 없을 수 있습니다.";
-} else if(text.includes("병가")) {
-    reply = "개인 질병 시 연간 최대 30일까지 무급 병가가 가능합니다. 단, 3일 이상 연속 사용 시에는 의사 진단서를 제출해야 합니다.";
-} else if(text.includes("경조사") || text.includes("결혼") || text.includes("출산")) {
-    reply = "[경조사 휴가 안내]\n- 본인 결혼: 5일\n- 배우자 출산: 10일\n- 부모/배우자 상: 5일 (모두 유급)";
-} else if(text.includes("촉진")) {
-    reply = "회사는 근로기준법에 따라 연차 사용을 촉진할 수 있습니다. 촉진 절차 후에도 사용하지 않은 연차는 보상 의무가 발생하지 않습니다.";
-}
+            if (text === "") return;
 
-            // 봇 답변 표시
+            // 1. 사용자 메시지 화면에 표시
+            chatBox.innerHTML += `
+                <div class="user-msg-wrapper">
+                    <div class="user-msg">${text}</div>
+                </div>
+            `;
+
+            // 2. 답변 로직 (회사 규정 데이터)
+            let reply = "죄송합니다. 해당 규정에 대해서는 아직 학습하지 못했습니다. '연차', '근무시간', '병가', '경조사' 등의 키워드로 질문해주세요.";
+
+            if(text.includes("근무시간") || text.includes("휴게")) {
+                reply = "<b>[근무 및 휴게]</b><br>정규 근무시간은 평일 09:00~18:00이며, 휴게시간은 12:00~13:00(1시간)입니다. 부서장 승인 시 시차출퇴근제 활용이 가능합니다.";
+            } else if(text.includes("지각") || text.includes("조퇴")) {
+                reply = "<b>[지각/조퇴 규정]</b><br>사유 발생 즉시 인사 시스템에 사전 신고해야 합니다. 월 3회 이상 무단 지각 시 복무 위반으로 간주될 수 있으니 주의해 주세요.";
+            } else if(text.includes("연차") || text.includes("휴가")) {
+                reply = "<b>[연차 유급휴가]</b><br>1년 80% 이상 출근 시 15일 부여, 2년마다 1일 가산(최대 25일)됩니다. 연차 사용 촉진 제도에 따라 미사용 연차는 보상이 없을 수 있습니다.";
+            } else if(text.includes("병가")) {
+                reply = "<b>[병가 규정]</b><br>개인 질병 시 연간 최대 30일까지 무급 병가가 가능합니다. 3일 이상 연속 사용 시 의사 진단서를 제출해야 합니다.";
+            } else if(text.includes("경조사") || text.includes("결혼") || text.includes("출산")) {
+                reply = "<b>[경조사 유급휴가]</b><br>- 본인 결혼: 5일<br>- 배우자 출산: 10일<br>- 부모/배우자 상: 5일";
+            } else if(text.includes("촉진")) {
+                reply = "<b>[연차 사용 촉진]</b><br>회사는 법에 따라 사용을 촉진할 수 있으며, 이 절차 후 미사용된 연차는 수당 지급 의무가 없습니다.";
+            } else if(text.includes("안녕") || text.includes("반가")) {
+                reply = "반가워요! 수진님이 만든 인사 챗봇입니다. 규정에 대해 무엇이든 물어보세요!";
+            }
+
+            // 3. 봇 답변 표시
             setTimeout(() => {
-                chatBox.innerHTML += `<div><span class="bot-msg">${reply}</span></div>`;
+                chatBox.innerHTML += `
+                    <div class="bot-msg-wrapper">
+                        <div class="bot-msg">${reply}</div>
+                    </div>
+                `;
+                // 스크롤을 항상 최하단으로 유지
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 500);
 
-            input.value = "";
+            input.value = ""; // 입력창 비우기
         }
     </script>
 </body>
 </html>
-
-
