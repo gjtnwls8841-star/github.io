@@ -31,6 +31,11 @@
                 <div class="bot-msg">안녕하세요 수진님! 😊<br>회사 규정에 대해 궁금한 키워드를 입력해주세요.<br><b>(예: 근무시간, 연차, 병가, 경조사)</b></div>
             </div>
         </div>
+        <div style="padding: 0 15px 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+    <button onclick="quickSend('연차')" style="background:#eee; color:#333; font-size:12px; padding:5px 10px;">#연차</button>
+    <button onclick="quickSend('근무시간')" style="background:#eee; color:#333; font-size:12px; padding:5px 10px;">#근무시간</button>
+    <button onclick="quickSend('병가')" style="background:#eee; color:#333; font-size:12px; padding:5px 10px;">#병가</button>
+</div>
         <div class="input-area">
             <input type="text" id="userInput" placeholder="질문을 입력하세요..." onkeypress="if(event.keyCode==13) send()">
             <button onclick="send()">전송</button>
@@ -84,6 +89,10 @@
 
             input.value = ""; // 입력창 비우기
         }
+        function quickSend(word) {
+    document.getElementById('userInput').value = word;
+    send();
+}
     </script>
 </body>
 </html>
