@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>수진의 인사관리 시스템 v2</title>
+    <title>수진의 인사관리 시스템 v2 (완전판)</title>
     <style>
         body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f0f2f5; display: flex; height: 100vh; margin: 0; overflow: hidden; }
         
-        /* 사이드바 디자인 */
+        /* 사이드바 */
         .sidebar { width: 220px; background: #2c3e50; color: white; display: flex; flex-direction: column; padding: 20px 0; shrink-0; }
         .sidebar h2 { font-size: 18px; text-align: center; margin-bottom: 30px; color: #2ecc71; border-bottom: 1px solid #3e4f5f; padding-bottom: 20px; }
         .menu-item { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; font-size: 15px; color: #bdc3c7; }
@@ -17,40 +17,40 @@
         /* 메인 영역 */
         .main-content { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; padding: 20px; overflow-y: auto; }
 
-        /* [메뉴 1] 챗봇 화면 */
+        /* 페이지 공통 */
         .page { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; }
         .page.active { display: flex; }
         
-        .chat-container { width: 100%; max-width: 450px; height: 650px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
+        /* [메뉴 1] 챗봇 */
+        .chat-container { width: 100%; max-width: 480px; height: 680px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
         .header { background: #27ae60; color: white; padding: 20px; text-align: center; font-weight: bold; }
         .chat-box { flex: 1; padding: 20px; overflow-y: auto; border-bottom: 1px solid #eee; display: flex; flex-direction: column; }
-        .quick-buttons { padding: 10px 15px; display: flex; gap: 8px; flex-wrap: wrap; background: #fff; }
+        .quick-buttons { padding: 10px 15px; display: flex; gap: 8px; flex-wrap: wrap; background: #fff; border-top: 1px solid #f9f9f9; }
         .tag-btn { background: #ebf7ee; color: #27ae60; border: 1px solid #c8e6c9; font-size: 11px; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-weight: bold; }
         .input-area { display: flex; padding: 15px; background: #fff; }
         input { flex: 1; border: 1px solid #ddd; padding: 12px; border-radius: 5px; outline: none; }
         .send-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
         
-        /* [메뉴 2] HR 가이드 화면 디자인 */
-        .guide-container { width: 100%; max-width: 800px; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .guide-header { border-bottom: 2px solid #27ae60; padding-bottom: 15px; margin-bottom: 20px; }
-        .guide-grid { display: grid; grid-template-cols: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        /* [메뉴 2] HR 가이드 */
+        .guide-container { width: 100%; max-width: 850px; background: white; border-radius: 20px; padding: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); height: auto; max-height: 90vh; overflow-y: auto; }
+        .guide-header { border-bottom: 2px solid #27ae60; padding-bottom: 15px; margin-bottom: 25px; }
+        .guide-grid { display: grid; grid-template-cols: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
         .card { background: #f9fbf9; border-radius: 12px; padding: 20px; border: 1px solid #eef2ee; }
-        .card h3 { color: #27ae60; margin-top: 0; display: flex; align-items: center; gap: 8px; }
-        .card ul { padding-left: 20px; font-size: 14px; color: #555; }
-        .card li { margin-bottom: 8px; }
+        .card h3 { color: #27ae60; margin-top: 0; font-size: 17px; display: flex; align-items: center; gap: 8px; }
+        .card ul { padding-left: 20px; font-size: 14px; color: #555; line-height: 1.8; }
 
-        /* 말풍선 공통 스타일 */
+        /* 말풍선 */
         .bot-msg-wrapper { margin-bottom: 15px; text-align: left; }
-        .bot-msg { background: #e9ecef; padding: 10px 14px; border-radius: 12px; border-top-left-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; }
+        .bot-msg { background: #e9ecef; padding: 12px 16px; border-radius: 12px; border-top-left-radius: 2px; display: inline-block; max-width: 85%; font-size: 14px; line-height: 1.6; color: #333; }
         .user-msg-wrapper { margin-bottom: 15px; text-align: right; }
-        .user-msg { background: #2ecc71; color: white; padding: 10px 14px; border-radius: 12px; border-top-right-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; }
+        .user-msg { background: #2ecc71; color: white; padding: 12px 16px; border-radius: 12px; border-top-right-radius: 2px; display: inline-block; max-width: 85%; font-size: 14px; line-height: 1.6; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2>Sujin HR</h2>
-        <div class="menu-item active" onclick="showPage('chatPage', this)">🤖 1. 수진 봇</div>
+        <h2>Sujin HR System</h2>
+        <div class="menu-item active" onclick="showPage('chatPage', this)">🤖 1. 챗봇 상담</div>
         <div class="menu-item" onclick="showPage('guidePage', this)">📚 2. HR 가이드</div>
     </div>
 
@@ -59,11 +59,15 @@
             <div class="chat-container">
                 <div class="header">📋 인사노무 자동응답 센터</div>
                 <div class="chat-box" id="chatBox">
-                    <div class="bot-msg-wrapper"><div class="bot-msg">안녕하세요! 무엇을 도와드릴까요?</div></div>
+                    <div class="bot-msg-wrapper">
+                        <div class="bot-msg">안녕하세요 수진님! 😊<br>이전의 모든 노무 지식이 복구되었습니다.<br>궁금한 키워드를 입력해보세요!</div>
+                    </div>
                 </div>
                 <div class="quick-buttons">
                     <button class="tag-btn" onclick="quickSend('연차')">#연차</button>
                     <button class="tag-btn" onclick="quickSend('퇴직금')">#퇴직금</button>
+                    <button class="tag-btn" onclick="quickSend('경조사')">#경조사</button>
+                    <button class="tag-btn" onclick="quickSend('포괄임금')">#포괄임금</button>
                     <button class="tag-btn" onclick="quickSend('5인미만')">#5인미만</button>
                 </div>
                 <div class="input-area">
@@ -77,39 +81,39 @@
             <div class="guide-container">
                 <div class="guide-header">
                     <h2 style="margin:0;">⚖️ 2026 HR Lifecycle 실무 가이드</h2>
-                    <p style="color:#888; font-size:14px;">2026년 최신 개정법령 및 인사 트렌드</p>
+                    <p style="color:#888; font-size:14px;">리액트로 공부하신 핵심 법령 및 트렌드 요약</p>
                 </div>
                 <div class="guide-grid">
                     <div class="card">
                         <h3>👤 채용 (Recruitment)</h3>
                         <ul>
-                            <li>채용절차법: 개인정보 요구 금지 강화</li>
-                            <li>AI 면접: 자동화된 결정 설명요구권</li>
-                            <li>남녀고평법: 모집 시 성차별 금지</li>
+                            <li><b>채용절차법:</b> 개인정보 요구 금지 및 비리 방지</li>
+                            <li><b>AI 관련법:</b> 자동화된 결정 거부 및 설명요구권</li>
+                            <li><b>남녀고평법:</b> 모집/채용 시 성차별 금지</li>
                         </ul>
                     </div>
                     <div class="card">
                         <h3>💰 보상 (Compensation)</h3>
                         <ul>
-                            <li>2026 최저임금 준수 및 산입범위 확인</li>
-                            <li>포괄임금제 규제 강화 대응</li>
-                            <li>임금명세서 계산방법 기재 의무</li>
+                            <li><b>2026 최저임금:</b> 결정 고시 준수 및 산입범위 체크</li>
+                            <li><b>임금채권보장:</b> 체불 발생 시 대지급금 제도 운영</li>
+                            <li><b>근로기준법:</b> 임금명세서 계산방법 기재 의무</li>
                         </ul>
                     </div>
                     <div class="card">
                         <h3>📊 평가 (Evaluation)</h3>
                         <ul>
-                            <li>절대평가 비중 확대 및 수시 피드백</li>
-                            <li>직무 역량 중심 다면평가 도입</li>
-                            <li>ESG 경영에 따른 윤리 평가 필수화</li>
+                            <li><b>직장내 괴롭힘:</b> 부당한 평가 압박 주의</li>
+                            <li><b>근로자참여법:</b> 기준 설정 시 근로자대표 협의</li>
+                            <li><b>트렌드:</b> 절대평가 확대 및 ESG 윤리 항목 강화</li>
                         </ul>
                     </div>
                     <div class="card">
                         <h3>🚪 퇴직 (Exit)</h3>
                         <ul>
-                            <li>퇴직연금 IRP 이전 필수화</li>
-                            <li>정년 연장 및 재고용 제도 운영</li>
-                            <li>전직 지원 서비스(Outplacement)</li>
+                            <li><b>퇴직급여법:</b> 퇴직연금 확대 및 IRP 이전 필수</li>
+                            <li><b>연령차별금지:</b> 정년 연장 및 재고용 지침 준수</li>
+                            <li><b>실업급여:</b> 수급 기준 및 이직확인서 처리</li>
                         </ul>
                     </div>
                 </div>
@@ -118,16 +122,13 @@
     </div>
 
     <script>
-        // 메뉴 전환 함수
         function showPage(pageId, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
             element.classList.add('active');
         }
 
-        // 챗봇 함수 (기존 로직 유지)
         function send() {
             const input = document.getElementById('userInput');
             const chatBox = document.getElementById('chatBox');
@@ -135,11 +136,45 @@
             if (text === "") return;
 
             chatBox.innerHTML += `<div class="user-msg-wrapper"><div class="user-msg">${text}</div></div>`;
-            
-            let reply = "죄송합니다. <b>'연차', '퇴직금', '포괄임금'</b> 등으로 질문해주세요!";
-            if(text.includes("연차")) reply = "1년 80% 출근 시 15일 부여됩니다.";
-            else if(text.includes("퇴직금")) reply = "1년 이상 근속 시 평균임금 기준으로 지급됩니다.";
-            else if(text.includes("포괄")) reply = "산정이 어려운 직종만 인정되며 사무직은 원칙적 무효입니다.";
+
+            let reply = "해당 내용은 아직 학습 중이에요. <b>'연차', '퇴직금', '포괄임금', '5인미만'</b> 등의 키워드로 질문해주세요!";
+
+            // --- 수진님이 이전에 정리한 모든 로직 복구 ---
+            if(text.includes("근무시간") || text.includes("휴게")) {
+                reply = "<b>[근무 및 휴게]</b><br>정규 근무시간은 평일 09:00~18:00이며, 휴게시간은 12:00~13:00입니다.";
+            } else if(text.includes("지각") || text.includes("조퇴")) {
+                reply = "<b>[지각/조퇴]</b><br>사유 발생 즉시 신고 필수! 월 3회 무단 지각 시 복무 위반입니다.";
+            } else if(text.includes("연차") || text.includes("휴가")) {
+                reply = "<b>[연차 휴가]</b><br>1년 80% 출근 시 15일 부여, 2년마다 1일 가산됩니다.";
+            } else if(text.includes("병가")) {
+                reply = "<b>[병가]</b><br>연간 최대 30일(무급). 3일 이상 사용 시 진단서가 필요합니다.";
+            } else if(text.includes("경조사")) {
+                reply = "<b>[경조사]</b><br>본인결혼 5일, 배우자출산 10일, 부모상 5일입니다.";
+            } else if(text.includes("퇴직금") || text.includes("퇴직급여")) {
+                reply = "<b>[퇴직급여 지급 대상]</b><br>1년 이상 근속 & 주 15시간 이상 근로자가 퇴직할 때 지급합니다.<br><br><b>[계산 공식]</b><br>(평균임금 × 30일 × 총계속근로일수) ÷ 365<br><br><b>[지급 기한]</b><br>퇴직 후 14일 이내 IRP 계좌 이전을 원칙으로 합니다.";
+            } else if(text.includes("중간정산")) {
+                reply = "<b>[퇴직금 중간정산]</b><br>원칙적으로 금지되나, 무주택자의 주택 구입, 6개월 이상 요양 등 사유 시 가능합니다.";
+            } else if(text.includes("평균임금")) {
+                reply = "<b>[평균임금 정의]</b><br>퇴직 전 3개월간 지급된 임금 총액을 그 기간의 총일수로 나눈 금액입니다.";
+            } else if(text.includes("포괄") || text.includes("포괄임금")) {
+                reply = "<b>[포괄임금제 인정요건]</b><br>1. 근로시간 산정이 객관적으로 어려울 것<br>2. 명시적 합의가 있을 것<br>3. 근로자에게 불이익하지 않을 것<br>※ 사무직처럼 산정이 가능하다면 원칙적 <b>무효</b>입니다.";
+            } else if(text.includes("5인") || text.includes("미만")) {
+                reply = "<b>[5인 미만 사업장 적용]</b><br>✅ 적용: 해고예고, 근로계약서 작성<br>❌ 미적용: 부당해고 구제신청, 가산수당(1.5배), 연차휴가";
+            } else if(text.includes("계약") || text.includes("위약")) {
+                reply = "<b>[근로계약 보호장치]</b><br>1. 조건명시: 임금/시간 서면 교부 필수<br>2. 위약예정 금지: 손해배상액 미리 정하기 금지<br>3. 상계 금지: 대출금과 임금 상계 금지";
+            } else if(text.includes("채용") || text.includes("시용") || text.includes("수습")) {
+                reply = "<b>[채용내정 및 시용]</b><br>- 내정 취소는 '해고'에 해당함<br>- 시용(수습)은 본채용 거부 시에도 정당한 이유가 필요함";
+            } else if(text.includes("기간제") || text.includes("계약직")) {
+                reply = "<b>[기간제법]</b><br>- 최대 2년 사용 가능 (초과 시 무기계약직 간주)<br>- 불합리한 차별 금지";
+            } else if(text.includes("성희롱") || text.includes("평등")) {
+                reply = "<b>[남녀고용평등법]</b><br>- 성희롱 예방 교육 연 1회 필수<br>- 육아휴직 및 육아기 근로시간 단축 보장";
+            } else if(text.includes("최저임금")) {
+                reply = "<b>[최저임금법]</b><br>- 매년 고시 준수<br>- 식대, 상여금 등도 기준에 따라 산입 범위 포함";
+            } else if(text.includes("퇴직연금") || text.includes("DB") || text.includes("DC")) {
+                reply = "<b>[퇴직연금 종류]</b><br>1. DB(확정급여): 회사가 운용<br>2. DC(확정기여): 본인이 운용<br>3. IRP(개인형): 이직 시 보관용";
+            } else if(text.includes("체불") || text.includes("대지급금")) {
+                reply = "<b>[임금채권보장]</b><br>체불 발생 시 국가가 일정 범위 내의 임금을 먼저 지급해주는 제도입니다.";
+            }
 
             setTimeout(() => {
                 chatBox.innerHTML += `<div class="bot-msg-wrapper"><div class="bot-msg">${reply}</div></div>`;
