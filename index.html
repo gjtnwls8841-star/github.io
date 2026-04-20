@@ -7,25 +7,33 @@
     <style>
         body { font-family: 'Pretendard', -apple-system, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .chat-container { width: 400px; height: 600px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; }
-        .header { background: #4a90e2; color: white; padding: 20px; text-align: center; font-weight: bold; }
         
-        /* 채팅창이 유동적으로 늘어나도록 설정 */
+        /* 1. 헤더: 진한 초록색 */
+        .header { background: #27ae60; color: white; padding: 20px; text-align: center; font-weight: bold; }
+        
         .chat-box { flex: 1; padding: 20px; overflow-y: auto; border-bottom: 1px solid #eee; display: flex; flex-direction: column; }
         
-        /* 해시태그 버튼 영역 */
         .quick-buttons { padding: 10px 15px; display: flex; gap: 8px; flex-wrap: wrap; background: #fff; border-top: 1px solid #f9f9f9; }
-        .tag-btn { background: #f0f4f9; color: #4a90e2; border: 1px solid #d0e2f8; font-size: 12px; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .tag-btn:hover { background: #4a90e2; color: white; }
+        
+        /* 2. 해시태그 버튼: 연한 초록색 배경에 초록색 글씨 */
+        .tag-btn { background: #ebf7ee; color: #27ae60; border: 1px solid #c8e6c9; font-size: 12px; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .tag-btn:hover { background: #27ae60; color: white; }
 
         .input-area { display: flex; padding: 15px; background: #fff; }
         input { flex: 1; border: 1px solid #ddd; padding: 12px; border-radius: 5px; outline: none; }
-        .send-btn { background: #4a90e2; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        /* 3. 전송 버튼: 헤더와 맞춘 초록색 */
+        .send-btn { background: #27ae60; color: white; border: none; padding: 10px 20px; margin-left: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
         .bot-msg-wrapper { margin-bottom: 15px; text-align: left; }
         .bot-msg { background: #e9ecef; padding: 10px 14px; border-radius: 12px; border-top-left-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; }
+        
         .user-msg-wrapper { margin-bottom: 15px; text-align: right; }
-        .user-msg { background: #4a90e2; color: white; padding: 10px 14px; border-radius: 12px; border-top-right-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; }
+        
+        /* 4. 사용자 말풍선: 생기 있는 초록색 */
+        .user-msg { background: #2ecc71; color: white; padding: 10px 14px; border-radius: 12px; border-top-right-radius: 2px; display: inline-block; max-width: 80%; font-size: 14px; line-height: 1.5; }
     </style>
+        
 </head>
 <body>
 
