@@ -43,6 +43,7 @@
             <button class="tag-btn" onclick="quickSend('근무시간')">#근무시간</button>
             <button class="tag-btn" onclick="quickSend('병가')">#병가</button>
             <button class="tag-btn" onclick="quickSend('경조사')">#경조사</button>
+            <button class="tag-btn" onclick="quickSend('퇴직금')">#퇴직금</button>
         </div>
 
         <div class="input-area">
@@ -73,6 +74,12 @@
                 reply = "<b>[병가]</b><br>연간 최대 30일(무급). 3일 이상 사용 시 진단서가 필요합니다.";
             } else if(text.includes("경조사")) {
                 reply = "<b>[경조사]</b><br>본인결혼 5일, 배우자출산 10일, 부모상 5일입니다.";
+            } else if(text.includes("퇴직금") || text.includes("퇴직급여")) {
+                reply = "<b>[퇴직급여 지급 대상]</b><br>1년 이상 근속 & 주 15시간 이상 근로자가 퇴직할 때 지급합니다.<br><br><b>[계산 공식]</b><br>(평균임금 × 30일 × 총계속근로일수) ÷ 365<br><br><b>[지급 기한]</b><br>퇴직 후 14일 이내 IRP 계좌 이전을 원칙으로 합니다.";
+            } else if(text.includes("중간정산")) {
+                reply = "<b>[퇴직금 중간정산]</b><br>원칙적으로 금지되나, 아래 사유 시 가능합니다.<br>1. 무주택자의 주택 구입/전세보증금<br>2. 6개월 이상 요양<br>3. 파산/회생 절차 등";
+            } else if(text.includes("평균임금")) {
+                reply = "<b>[평균임금 정의]</b><br>퇴직 전 3개월간 지급된 임금 총액을 그 기간의 총일수로 나눈 금액입니다. (연차수당, 상여금 등 포함)";
             }
 
             setTimeout(() => {
