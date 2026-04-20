@@ -1,7 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>수진의 인사/노무 자동응답</title>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .chat-container { width: 400px; background: white; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #4a90e2; color: white; padding: 20px; text-align: center; font-weight: bold; }
+        .chat-box { height: 300px; padding: 20px; overflow-y: auto; border-bottom: 1px solid #eee; font-size: 14px; line-height: 1.6; }
+        .input-area { display: flex; padding: 15px; }
+        input { flex: 1; border: 1px solid #ddd; padding: 10px; border-radius: 5px; outline: none; }
+        button { background: #4a90e2; color: white; border: none; padding: 10px 15px; margin-left: 10px; border-radius: 5px; cursor: pointer; }
+        .bot-msg { background: #e9ecef; padding: 8px 12px; border-radius: 10px; margin-bottom: 10px; display: inline-block; }
+    </style>
+</head>
 <body>
-  <h1>수진의 첫 번째 웹사이트!</h1>
-  <p>GitHub Pages를 이용해 사이트를 만들었습니다.</p>
+    <div class="chat-container">
+        <div class="header">📋 인사노무 자동응답 센터</div>
+        <div class="chat-box" id="chatBox">
+            <div class="bot-msg">안녕하세요! 궁금한 인사/노무 키워드를 입력해주세요.<br>(예: 연차, 퇴직금, 수습기간)</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="질문을 입력하세요..." onkeypress="if(event.keyCode==13) send()">
+            <button onclick="send()">전송</button>
+        </div>
+    </div>
+
+    <script>
+        function send() {
+            const input = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            if (input.value.trim() === "") return;
+
+            // 사용자 메시지 표시
+            chatBox.innerHTML += `<div style="text-align:right; margin-bottom:10px;"><span style="background:#4a90e2; color:white; padding:8px 12px; border-radius:10px;">${input.value}</span></div>`;
+
+            // 답변 로직 (수진님이 공부하면서 여기에 데이터를 추가하시면 돼요!)
+            let reply = "죄송합니다. 아직 학습하지 못한 내용이에요. 노무사 시험 공부 후에 더 채워둘게요!";
+            const text = input.value;
+
+            if(text.includes("연차")) {
+                reply = "연차유급휴가는 1년간 80% 이상 출근 시 15일이 발생합니다.";
+            } else if(text.includes("퇴직금")) {
+                reply = "퇴직금은 계속근로기간 1년에 대해 30일분 이상의 평균임금을 지급해야 합니다.";
+            } else if(text.includes("수습")) {
+                reply = "수습 사용 중인 근로자라도 3개월 이내라면 최저임금의 90%를 지급할 수 있습니다. (단, 단순노무직종 제외)";
+            }
+
+            // 봇 답변 표시
+            setTimeout(() => {
+                chatBox.innerHTML += `<div><span class="bot-msg">${reply}</span></div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 500);
+
+            input.value = "";
+        }
+    </script>
 </body>
 </html>
+
